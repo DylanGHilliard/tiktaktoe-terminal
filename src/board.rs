@@ -12,7 +12,7 @@ impl  Board {
 
         println!("{:?}", cells);
 
-        return Self{cells,}
+        return Self{cells}
             
         
     }
