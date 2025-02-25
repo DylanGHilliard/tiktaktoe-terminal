@@ -1,12 +1,15 @@
+mod game_manager;
+mod game;
 mod board;
-use crate::board::Board;
+
+use game::Game;
+
+use crate::game_manager::GameManager;
 
 fn main() {
 
-    let board: Board = Board::new();
-    
-    println!("{:?}", board.cells[0]);
-    println!("{:?}", board.cells[1]);
-    println!("{:?}", board.cells[2]);
+    let mut tictak: GameManager = GameManager::new();
+    tictak.play_game();
+  
 }
 
