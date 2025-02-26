@@ -9,21 +9,16 @@ impl  Board {
 
     pub fn new() ->Self{
         let cells: Vec<Vec<char>>= vec![vec!['-'; 3];3];
-
-        println!("{:?}", cells);
-
         return Self{cells}
-            
-        
     }
 
     pub fn insert_new_symbol (&mut self, row: i32, col: i32, symbol: char) ->bool {
-        if row >= 3 || col >= 3 {
+        if row >= 4 || col >= 4{
             println!("row and column should be less than 4");
             return false;
         }
 
-        if self.cells[row as usize][col as usize] != '-' {
+        if self.cells[(row-1) as usize][(col-1) as usize] != '-' {
             println!("Someone already Placed There");
             return false;
         }

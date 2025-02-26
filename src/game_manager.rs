@@ -25,6 +25,7 @@ impl GameManager{
     }
 
     pub fn play_game(&mut self){
+        
         while self.game.status != "COMPLETE"{
            let (row, col, is_valid) = self.get_player_input();
 
@@ -41,7 +42,9 @@ impl GameManager{
 
             self.moves +=1;
 
+
             println!("{}", game_board);
+            self.change_player_turn();
             
 
         }
@@ -49,17 +52,19 @@ impl GameManager{
 
     pub fn get_player_input(&self) -> (i32, i32, bool){
         let mut user_input:String  = String::new();
+        println!("{}", self.game.board);
         
         println!("Enter Row and column with space bettween");
         io::stdin().read_line(&mut user_input).expect("Failed to read line");
         user_input.truncate(user_input.len()-1);
 
-        let inputs: Vec<i32> = user_input.split(" ")
+        let inputs: Vec<i32> = user_input.split_whitespace()
         .map(|x| x.parse().expect("Not an Interger!"))
         .collect();
 
         if inputs.len() !=2 {
             println!("enter row and column with a space in between");
+            println!("{}", self.game.board);
             return (0, 0, false)
         };
 
@@ -67,6 +72,18 @@ impl GameManager{
 
 
     
+    }
+
+    pub fn change_player_turn(&mut self){
+        let tmp_player:Option<Player> = self.game.players.pop_front();
+        match tmp_player {
+            Some(current_player)=>{
+                self.game.players.push_back(current_player);
+            },
+            _ => ()
+        }
+        
+        
     }
 
 }
