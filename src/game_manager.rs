@@ -1,9 +1,10 @@
 
-
+use std::collections::VecDeque;
 use std::io;
 
 use crate::board::Board;
 use crate::game::Game;
+use crate::player::Player;
 
 
 pub struct GameManager {
@@ -12,9 +13,10 @@ pub struct GameManager {
 }
 
 impl GameManager{
-    pub fn new() ->Self{
+    pub fn new(_players: VecDeque<Player>) ->Self{
         let board: Board = Board::new();
-        let game: Game = Game::new(board);
+        let players: VecDeque<Player> = _players;
+        let game: Game = Game::new(board, players);
 
         return Self{
             game,
@@ -24,12 +26,23 @@ impl GameManager{
 
     pub fn play_game(&mut self){
         while self.game.status != "COMPLETE"{
-           let (mut row, mut col, mut is_valid) = self.get_player_input();
+           let (row, col, is_valid) = self.get_player_input();
 
             if !is_valid{
                 continue;
             }
-            println!("row: {row}   Column: {col} ");
+            let game_board: &mut Board = &mut self.game.board;
+
+
+            let is_inserted: bool = game_board.insert_new_symbol(row, col, self.game.players[0].symbol);
+            if !is_inserted {
+                continue;
+            }
+
+            self.moves +=1;
+
+            println!("{}", game_board);
+            
 
         }
     }
@@ -43,7 +56,7 @@ impl GameManager{
 
         let inputs: Vec<i32> = user_input.split(" ")
         .map(|x| x.parse().expect("Not an Interger!"))
-        .collect();;
+        .collect();
 
         if inputs.len() !=2 {
             println!("enter row and column with a space in between");
