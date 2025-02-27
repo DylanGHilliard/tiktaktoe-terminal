@@ -27,8 +27,9 @@ impl GameManager{
     pub fn play_game(&mut self){
         
         while self.game.status != "COMPLETE"{
-           let (row, col, is_valid) = self.get_player_input();
-
+           let (mut row, mut col, is_valid) = self.get_player_input();
+            row -=1;
+            col -=1;
             if !is_valid{
                 continue;
             }
@@ -41,9 +42,14 @@ impl GameManager{
             }
 
             self.moves +=1;
-
-
             println!("{}", game_board);
+
+            if self.has_won(row, col, self.game.players[0].symbol) {
+                println!("Winner is Player {0} with symbol {1}", self.game.players[0].name, self.game.players[0].symbol);
+                self.game.status = "COMPLETE".to_string();
+            };
+
+
             self.change_player_turn();
             
 
@@ -83,7 +89,42 @@ impl GameManager{
             _ => ()
         }
         
-        
+    }
+
+    pub fn is_row_complete(&mut self, row: i32, symbol: char) ->bool {
+
+        for i in 0..3 {
+            if self.game.board.cells[row as usize][i as usize] !=symbol{
+                return false
+            }
+        }
+        return true;
+    }
+
+    pub fn is_col_complete(&mut self, col: i32, symbol: char) ->bool {
+
+        for i in 0..3 {
+            if self.game.board.cells[i as usize][col as usize] !=symbol{
+                return false
+            }
+        }
+        return true;
+    }
+
+
+    pub fn has_won(&mut self, row: i32, col: i32, symbol: char) ->bool {
+
+
+
+        if self.is_row_complete(row, symbol) {
+            return true;
+        };
+
+        if self.is_col_complete(col, symbol) {
+            return true;
+        }
+        return false;
+
     }
 
 }
