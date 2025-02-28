@@ -3,7 +3,7 @@ mod game;
 mod board;
 mod player;
 use std::collections::VecDeque;
-use std::io;
+use std::io::{self, Read};
 
 use player::Player;
 
@@ -26,7 +26,16 @@ fn main() {
     players.push_back(player2);
 
     let mut tictak: GameManager = GameManager::new(players);
-    tictak.play_game();
+
+    let mut will_continue: String = 'y'.to_string();
+
+    while will_continue == 'y'.to_string(){
+        println!("Start A new Game?\n y for yes\n n for no");
+        io::stdin().read_line(&mut will_continue).expect("Not Correct Input");
+        
+        tictak.play_game();
+    }
+    
   
 }
 

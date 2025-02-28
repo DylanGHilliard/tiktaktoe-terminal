@@ -1,4 +1,4 @@
-use std::{array, fmt};
+use std::fmt;
 
 pub struct Board {
   
