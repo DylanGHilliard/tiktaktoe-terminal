@@ -28,10 +28,21 @@ fn main() {
     let mut tictak: GameManager = GameManager::new(players);
 
     let mut will_continue: String = 'y'.to_string();
+    let mut firstgame = true;
 
     while will_continue == 'y'.to_string(){
+
+        if firstgame{
+
+            tictak.play_game();
+            firstgame = false;
+            continue;
+        }
         println!("Start A new Game?\n y for yes\n n for no");
         io::stdin().read_line(&mut will_continue).expect("Not Correct Input");
+        will_continue.truncate(will_continue.len()-1);
+
+        println!("{}",will_continue);
         
         tictak.play_game();
     }
