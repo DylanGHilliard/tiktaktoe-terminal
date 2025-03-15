@@ -25,6 +25,8 @@ impl GameManager{
     }
 
     pub fn play_game(&mut self){
+        self.game.board.clear_board();
+        self.game.status = "New Game".to_string();
         println!("{}", self.game.board);
         while self.game.status != "COMPLETE"{
            let (mut row, mut col, is_valid) = self.get_player_input();
@@ -161,6 +163,9 @@ impl GameManager{
         self.game.players[0].wins +=1;
         self.game.players[1].losses +=1;
     }
+
+
+ 
 
 }
 

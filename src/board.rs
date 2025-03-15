@@ -28,6 +28,14 @@ impl  Board {
         return true;
     }
 
+    pub fn clear_board(&mut self) {
+        for row in &mut self.cells {
+            for cell in row {
+                *cell = '-';
+            }
+        }
+    }   
+
 
     
 }
