@@ -2,8 +2,9 @@ mod game_manager;
 mod game;
 mod board;
 mod player;
+mod ai;
 use std::collections::VecDeque;
-use std::io::{self, Read};
+use std::io;
 
 use player::Player;
 
@@ -13,7 +14,7 @@ fn main() {
 
 
 
-    let players: VecDeque<Player> = PlayerSetup();
+    let players: VecDeque<Player> = player_setup();
 
     let mut tictak: GameManager = GameManager::new(players);
 
@@ -23,7 +24,6 @@ fn main() {
     while can_continue{
         tictak.play_game();
         can_continue = will_continue();
-
         
     }
     
@@ -47,7 +47,7 @@ fn will_continue()->bool{
 
 }
 
-fn PlayerSetup() -> VecDeque<Player> {
+fn player_setup() -> VecDeque<Player> {
 
     // Get the player1 name
     println!("Enter player X name");
@@ -63,7 +63,13 @@ fn PlayerSetup() -> VecDeque<Player> {
 
     // Sets the Player and their symbols
     let player1:Player = Player::new(player1_name, 'X');
-    let player2:Player = Player::new(player2_name, 'O');
+    // If the user typed "ai" (case-insensitive) as the second player's name, treat them as an AI
+    let player2_trim = player2_name.trim().to_lowercase();
+    let player2: Player = if player2_trim == "ai" {
+        Player::new_ai("Computer".to_string(), 'O')
+    } else {
+        Player::new(player2_name, 'O')
+    };
     let mut players:VecDeque<Player> = VecDeque::new();
 
     players.push_back(player1);

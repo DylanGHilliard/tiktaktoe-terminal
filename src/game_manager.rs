@@ -5,6 +5,7 @@ use std::io;
 use crate::board::Board;
 use crate::game::Game;
 use crate::player::Player;
+use crate::ai;
 
 
 pub struct GameManager {
@@ -29,7 +30,26 @@ impl GameManager{
         self.game.status = "New Game".to_string();
         println!("{}", self.game.board);
         while self.game.status != "COMPLETE"{
-           let (mut row, mut col, is_valid) = self.get_player_input();
+            // Decide move: if current player is AI, compute best move, otherwise read input
+            let mut row: i32 = 0;
+            let mut col: i32 = 0;
+            let mut is_valid: bool = false;
+
+            if self.game.players[0].is_ai {
+                // opponent is the next player in the queue
+                let opponent_symbol = self.game.players[1].symbol;
+                let (r, c) = ai::find_best_move(&self.game.board, self.game.players[0].symbol, opponent_symbol);
+                // convert to 1-based to reuse existing logic that decrements after input
+                row = (r as i32) + 1;
+                col = (c as i32) + 1;
+                println!("AI chooses: row {} col {}", row, col);
+                is_valid = true;
+            } else {
+                let (r, c, valid) = self.get_player_input();
+                row = r;
+                col = c;
+                is_valid = valid;
+            }
             row -=1;
             col -=1;
             if !is_valid{
@@ -52,7 +72,11 @@ impl GameManager{
                 self.set_score();
                 
             }
-
+            
+            if self.has_tie(){
+                println!("The Game Has Tied");
+                self.game.status = "COMPLETE".to_string();
+            }
 
             self.change_player_turn();
             
@@ -162,6 +186,18 @@ impl GameManager{
     pub fn set_score(&mut self) {
         self.game.players[0].wins +=1;
         self.game.players[1].losses +=1;
+    }
+
+    pub fn has_tie(& self) ->bool {
+        for r in 0..3 {
+            for c in 0..3{
+                if self.game.board.cells [r as usize][c as usize] == '-' {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 
